@@ -1,49 +1,55 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+string input ="kjasfdlkajsfmxiusafjadfiejwp";
+var vowels = new HashSet<char>{'a','e','i','o','u'};
 
+int vowelCount =0;
+foreach (char c in input)
+{
+    if (vowels.Contains(c))
+    {
+        vowelCount++;
+    }
+}
+
+if (vowelCount >=3)
+{
+    Console.WriteLine("has enough vowels");
+}
 
 
 ////////////
-//adventof code 2015 day 4  
+// //adventof code 2015 day 4  
 
-string input = "iwrupvqb";
+// string input = "iwrupvqb";
 
-for (int i = 0; i < int.MaxValue; i++)
-{
-    var hashHex = CreateMD5(input+i.ToString());
-    if (hashHex.Substring(0,6) == "000000")
-    {
-        Console.WriteLine("number addedto end of input: " +i.ToString() + "   HashHex " + hashHex );
-        break;
-    }
+// for (int i = 0; i < int.MaxValue; i++)
+// {
+//     var hashHex = CreateMD5(input+i.ToString());
+//     if (hashHex.Substring(0,6) == "000000")
+//     {
+//         Console.WriteLine("number addedto end of input: " +i.ToString() + "   HashHex " + hashHex );
+//         break;
+//     }
 
 
-}
+// }
 
-//no idea this was a thing.
-//stackoverflow  https://stackoverflow.com/questions/11454004/calculate-a-md5-hash-from-a-string
-string CreateMD5(string input)
-{
-    // Use input string to calculate MD5 hash
-    using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
-    {
-        byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
-        byte[] hashBytes = md5.ComputeHash(inputBytes);
+// //no idea this was a thing.
+// //stackoverflow  https://stackoverflow.com/questions/11454004/calculate-a-md5-hash-from-a-string
+// string CreateMD5(string input)
+// {
+//     // Use input string to calculate MD5 hash
+//     using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
+//     {
+//         byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+//         byte[] hashBytes = md5.ComputeHash(inputBytes);
 
-        return Convert.ToHexString(hashBytes); 
-    }
-}
+//         return Convert.ToHexString(hashBytes); 
+//     }
+// }
 
 ////////////////
-
-
-
-
-
-
-
-
-
 
 
 // string[] lines = System.IO.File.ReadAllLines(@"C:\CURRENT\Testbed\AdventOfCode\AdventOfCode_Old\AdventOfCode_Old\inputs.txt");
@@ -151,6 +157,7 @@ string CreateMD5(string input)
 
 
 
+////////////////
 
 // //Advent of Code 2015 - Day 1   
 // int start = 0;
@@ -181,6 +188,7 @@ string CreateMD5(string input)
 // Console.WriteLine("Final Floor: " + currentFloor + " Basement entered at position: " + basementIndex    );
 
 
+////////////////
 
 // //Advent of Code 2015 - Day 2
 // int wrappingPaperTotal = 0;
@@ -220,3 +228,5 @@ string CreateMD5(string input)
 
 // }
 // Console.WriteLine("Total Wrapping Paper Needed: " + wrappingPaperTotal + " Total Ribbon Needed: " + ribbonTOtal );
+
+////////////////
