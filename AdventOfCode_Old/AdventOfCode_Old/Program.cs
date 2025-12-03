@@ -1,5 +1,51 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+
+
+
+////////////
+//adventof code 2015 day 4  
+
+string input = "iwrupvqb";
+
+for (int i = 0; i < int.MaxValue; i++)
+{
+    var hashHex = CreateMD5(input+i.ToString());
+    if (hashHex.Substring(0,6) == "000000")
+    {
+        Console.WriteLine("number addedto end of input: " +i.ToString() + "   HashHex " + hashHex );
+        break;
+    }
+
+
+}
+
+//no idea this was a thing.
+//stackoverflow  https://stackoverflow.com/questions/11454004/calculate-a-md5-hash-from-a-string
+string CreateMD5(string input)
+{
+    // Use input string to calculate MD5 hash
+    using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
+    {
+        byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+        byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+        return Convert.ToHexString(hashBytes); 
+    }
+}
+
+////////////////
+
+
+
+
+
+
+
+
+
+
+
 // string[] lines = System.IO.File.ReadAllLines(@"C:\CURRENT\Testbed\AdventOfCode\AdventOfCode_Old\AdventOfCode_Old\inputs.txt");
 
 // //starting coordinates
