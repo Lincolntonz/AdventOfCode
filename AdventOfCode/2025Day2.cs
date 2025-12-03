@@ -97,13 +97,13 @@ namespace AdventOfCode
                 if (invalidIds.Count > 0)
                 {
 
-                    Console.WriteLine(String.Format("{0}-{1}\t\tInvalid IDs found: {2}", rStart, rEnd, string.Join(", ", invalidIds)));
+                    //Console.WriteLine(String.Format("{0}-{1}\t\tInvalid IDs found: {2}", rStart, rEnd, string.Join(", ", invalidIds)));
 
                     invalidIDCount += invalidIds.Count;
                 }
                 else
                 {
-                    Console.WriteLine(String.Format("{0}-{1}", rStart, rEnd));
+                    //Console.WriteLine(String.Format("{0}-{1}", rStart, rEnd));
                 }
             }
 

@@ -96,30 +96,13 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        //string[] inputs = File.ReadAllLines("C:\\CURRENT\\Testbed\\AdventOfCode\\AdventOfCode\\2025day1input.txt");
 
-        //string[] inputs2 = {
-        //                    "R50"
-        //                    ,"R50"
-        //                    ,"L50"
-        //                    ,"L50"
-        //                    ,"R75"
-        //                    ,"L50"
-        //                    ,"L25"
-        //                    ,"L75"
-        //                    ,"R50" };
-
-
-        _2025Day2 solver = new _2025Day2();
-        solver.aoc2025Day2();
-
-
-
-
-
-
+        _2025Day3 solver = new _2025Day3();
+        solver.aoc2025Day3();
 
     }
+
+
 
     ///part 1 and 2 taken from a reddit solution. can't get my part 2 to work.
     public string Part1(string[] input)
