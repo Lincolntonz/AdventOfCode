@@ -31,7 +31,7 @@ namespace AdventOfCode
             //}
 
 
-            joltageCalc(ref totalJoltage, inputs, 12);
+            joltageCalc(ref totalJoltage, inputs, 2);
             Console.WriteLine(String.Format("Total Joltage: {0}", totalJoltage));
 
 
