@@ -1,23 +1,103 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-string input ="kjasfdlkajsfmxiusafjadfiejwp";
+///////////
+/// 
+/// Advent of Code 2015 - Day 5
+using System.Text.RegularExpressions;
+
+//string input ="kjasfdlkajsfmxiusafjadfiejwp";
+string[] input = System.IO.File.ReadAllLines(@"C:\CURRENT\Testbed\AdventOfCode\AdventOfCode_Old\AdventOfCode_Old\inputs.txt");
+
+
 var vowels = new HashSet<char>{'a','e','i','o','u'};
-
-int vowelCount =0;
-foreach (char c in input)
+int niceStrings = 0;
+foreach(string line in input)
 {
-    if (vowels.Contains(c))
+    //niceStrings = Part1NiceString(vowels, niceStrings, line);
+    niceStrings = Part2NiceString(niceStrings, line);
+}
+
+Console.WriteLine("Total Nice Strings: " + niceStrings);
+
+static int Part2NiceString(int niceStrings, string line)
+{
+    bool niceString = false;
+    bool hasRepeatSequence = false;
+    bool hasRepeatSandwich = false;
+    Match repeatSequence = null;
+    Match repeatSandiwch = null;
+
+    //part 2:
+    //any two letters that repeat at least twice.
+    //contains a letter that repeats with one letter sandwiched between them.
+    //answer incorrect. original repeat regex:
+//"(.{2}).*(\1)"
+
+    //match repeat sequence of two letters, no overlap.
+    if ((repeatSequence = Regex.Match(line, @"(.{2}).*(\1)")).Success)
     {
-        vowelCount++;
+        hasRepeatSequence = true;
     }
+    //match letter sandwich. 
+    if ((repeatSandiwch = Regex.Match(line, @"(.).(\1)")).Success)
+    {
+        hasRepeatSandwich = true;
+    }
+    if (hasRepeatSandwich && hasRepeatSequence)
+    {
+        //Console.WriteLine("has enough vowels and a double letter and no illegals");
+        niceStrings++;
+        niceString = true;
+    }
+    Console.WriteLine(String.Format("Line: {0} Nice:{4} HasRepeatSequence: {1} {5} HasRepeatSandwich: {2} {6}", line, hasRepeatSequence, hasRepeatSandwich, repeatSequence.Value, niceString, repeatSequence.Value, repeatSandiwch.Value));
+    
+    return niceStrings;
 }
 
-if (vowelCount >=3)
+
+
+
+
+
+static int Part1NiceString(HashSet<char> vowels, int niceStrings, string line)
 {
-    Console.WriteLine("has enough vowels");
+    int vowelCount = 0;
+    bool hasDoubleLetter = false;
+    bool containsIllegal = false;
+    bool niceString = false;
+    Match illegalMatch = null;
+    Match doubleLetterMatch = null;
+    //loop through chars to count vowels.
+    foreach (char c in line)
+    {
+        if (vowels.Contains(c))
+        {
+            vowelCount++;
+        }
+    }
+
+    if ((doubleLetterMatch = Regex.Match(line, @"(.)\1")).Success)
+    {
+        hasDoubleLetter = true;
+    }
+
+    if ((illegalMatch = Regex.Match(line, @"ab|cd|pq|xy")).Success)
+    {
+        containsIllegal = true;
+    }
+    if (vowelCount >= 3 && hasDoubleLetter && !containsIllegal)
+    {
+        //Console.WriteLine("has enough vowels and a double letter and no illegals");
+        niceStrings++;
+        niceString = true;
+    }
+    Console.WriteLine(String.Format("Line: {0} Nice:{5} VowelCount: {1} HasDoubleLetter: {2} {6} ContainsIllegal: {3} {4}", line, vowelCount, hasDoubleLetter, containsIllegal, illegalMatch.Value, niceString, doubleLetterMatch.Value));
+    return niceStrings;
 }
-
-
+///////////
+/// 
+/// 
+/// 
 ////////////
 // //adventof code 2015 day 4  
 
@@ -91,7 +171,7 @@ if (vowelCount >=3)
 //                 {
 //                     gridRobot[1]--;
 //                 }
-                
+
 //                 break; 
 //             //east           
 //             case '>':
@@ -103,7 +183,7 @@ if (vowelCount >=3)
 //                 {
 //                     gridRobot[0]++;
 //                 }
-                
+
 //                 break;
 //                 break;  
 //             //west          
@@ -116,7 +196,7 @@ if (vowelCount >=3)
 //                 {
 //                     gridRobot[0]--;
 //                 }
-                
+
 //                  break;
 //                 break;
 //             default:
@@ -169,7 +249,7 @@ if (vowelCount >=3)
 //     for(int i = 0; i < line.Length; i++)
 //     {
 //         char c = line[i];
-        
+
 //         if (c=='(')
 //         { 
 //             currentFloor ++;
@@ -181,7 +261,7 @@ if (vowelCount >=3)
 //         if (currentFloor < 0 && basementIndex == 0)
 //         {
 //             basementIndex = i+1;
-            
+
 //         }
 //     }
 // }
