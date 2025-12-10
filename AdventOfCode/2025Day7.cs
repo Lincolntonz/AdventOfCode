@@ -28,20 +28,33 @@ namespace AdventOfCode
 
             long beamSplit = 0;
 
-            int[] startingIndex = new int[] { 0, input[0].IndexOf('S')};  ///starting point will be 'S' on first line.
-            Console.WriteLine("starting index: " + startingIndex);
+            int[] startingIndex = new int[] { 0, input[0].IndexOf('S') };  ///starting point will be 'S' on first line.
+            //Console.WriteLine("starting index: " + startingIndex);
             //test input read
 
+
+            //foreach (string str in input)
+            //    Console.WriteLine(str);
+
+
+            beamSplit = Part2(input, tachyonGrid, beamSplit, startingIndex);
+            return beamSplit.ToString();
+        }
+
+        private static long Part1(string[] input, string[] tachyonGrid, long beamSplit, int[] startingIndex)
+        {
+
             List<int> beamsOnPreviousRow = new List<int>(); //index value of each beam on previousRow
-            beamsOnPreviousRow.Add(startingIndex[1]);
             List<int> beamsOnthisRow = new List<int>(); //index of each beam on previousRow
             List<int> beamsOnNextRow = new List<int>();
+
+            beamsOnPreviousRow.Add(startingIndex[1]);
             for (int i = 1; i < tachyonGrid.Length; i++)  //i=1, don't start on entry point row.
             {
-                
+
                 foreach (int incomingBeamColumn in beamsOnPreviousRow)
                 {
-                    
+
                     //beam is incoming at this index.
                     //on this row, check to see if its a splitter (^) or empty space (.)
                     char hit = input[i][incomingBeamColumn];
@@ -50,8 +63,10 @@ namespace AdventOfCode
                         case '^':
                             //beam splits. Beam will be on incomingBeamColumn-1 and incomingBeamColumn+1. check bounds 
                             beamsOnNextRow.Add(incomingBeamColumn - 1 < 0 ? 0 : incomingBeamColumn - 1);//cannot be less than 0.
+                            tachyonGrid[i] = ReplaceAt(tachyonGrid[i], beamsOnNextRow.Last(), '|');
                             //beam to the right index cannot be greater than the max length of the line.
                             beamsOnNextRow.Add(incomingBeamColumn + 1 > tachyonGrid[0].Length - 1 ? tachyonGrid[0].Length - 1 : incomingBeamColumn + 1);
+                            tachyonGrid[i] = ReplaceAt(tachyonGrid[i], beamsOnNextRow.Last(), '|');
                             beamSplit++;
                             break;
                         case '.':
@@ -59,7 +74,7 @@ namespace AdventOfCode
                             //string immutable, removeat and ad to get around this
                             tachyonGrid[i] = ReplaceAt(tachyonGrid[i], incomingBeamColumn, '|');
                             beamsOnNextRow.Add(incomingBeamColumn);
-                            break ;
+                            break;
                     }
 
                 }
@@ -69,10 +84,89 @@ namespace AdventOfCode
                 beamsOnNextRow.Clear();
 
                 Console.WriteLine(tachyonGrid[i]);
-                
+
             }
             Console.Write("Total number of beam splits: " + beamSplit);
-            return beamSplit.ToString();
+            return beamSplit;
+        }
+        private static long Part2(string[] input, string[] tachyonGrid, long beamSplit, int[] startingIndex)
+        {
+            ///For part 2, beam will only take one path when hitting a spliter.
+            ///Answer is the number of different paths a beam could take to reach the bottom.
+            /// count paths off of a split. Count '|' , but do not count an '|' that follows another '|'.
+
+            //my part one drawing is wrong.
+
+            List<int> beamsOnPreviousRow = new List<int>(); //index value of each beam on previousRow
+            List<int> beamsOnthisRow = new List<int>(); //index of each beam on previousRow
+            List<int> beamsOnNextRow = new List<int>();
+            long beamPossibility = 0;
+
+            long countPipes = 0;
+            long countPipes2 = 0;
+            beamsOnPreviousRow.Add(startingIndex[1]);
+            int[] pathCounter = new int[input[0].Length];  
+            for (int i = 1; i < tachyonGrid.Length; i++)  //i=1, don't start on entry point row.
+            {
+
+                foreach (int incomingBeamColumn in beamsOnPreviousRow)
+                {
+
+                    //beam is incoming at this index.
+                    //on this row, check to see if its a splitter (^) or empty space (.)
+                    char hit = input[i][incomingBeamColumn];
+                    switch (hit)
+                    {
+                        case '^':
+                            //beam splits. Beam will be on incomingBeamColumn-1 and incomingBeamColumn+1. check bounds 
+                            beamsOnNextRow.Add(incomingBeamColumn - 1 < 0 ? 0 : incomingBeamColumn - 1);//cannot be less than 0.
+                            tachyonGrid[i] = ReplaceAt(tachyonGrid[i], beamsOnNextRow.Last(), '|');
+                            //beam to the right index cannot be greater than the max length of the line.
+                            beamsOnNextRow.Add(incomingBeamColumn + 1 > tachyonGrid[0].Length - 1 ? tachyonGrid[0].Length - 1 : incomingBeamColumn + 1);
+                            tachyonGrid[i] = ReplaceAt(tachyonGrid[i], beamsOnNextRow.Last(), '|');
+                            beamSplit++;
+                            break;
+                        case '.':
+                            //empty space. beam will be here. 
+                            //string immutable, removeat and ad to get around this
+                            tachyonGrid[i] = ReplaceAt(tachyonGrid[i], incomingBeamColumn, '|');
+                            beamsOnNextRow.Add(incomingBeamColumn);
+                            
+                            break;
+                    }
+                }
+
+                //need to keep track of number of times a path was taken. this would mean we need an int[tachyongrid[0].length], where each index is a counter for how many times the path occurs.
+                foreach(int beamlocation in beamsOnNextRow)
+                {
+                    pathCounter[beamlocation]++;
+                }
+
+
+                beamsOnPreviousRow.Clear();
+                beamsOnPreviousRow.AddRange(beamsOnNextRow);
+                beamsOnNextRow.Clear();
+
+                Console.WriteLine(tachyonGrid[i]);
+
+            }
+            //var countpipes2 = 0;
+            ////count pipes.
+            //foreach (string str in tachyonGrid)
+            //{
+            //    foreach (char c in str)
+            //    {
+            //        if (c == '|')
+            //            countpipes2++;
+            //    }
+            //}
+            foreach (int p in pathCounter)
+            {
+                countPipes2 += p;
+            }
+
+            Console.Write(String.Format(@"Count splits total: {0} Count pipes: {1} ", beamSplit, countPipes2));
+            return beamSplit;
         }
 
 
