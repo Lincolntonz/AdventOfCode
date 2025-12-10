@@ -7,4 +7,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="PuzzleInputs\2025day7input.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="PuzzleInputs\2025day7input.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

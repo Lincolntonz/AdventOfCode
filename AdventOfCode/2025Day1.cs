@@ -97,8 +97,8 @@ internal class Program
     private static void Main(string[] args)
     {
 
-        _2025Day6 solver = new _2025Day6();
-        solver.aoc2025Day6();
+        _2025Day7 solver = new _2025Day7();
+        solver.aoc2025Day7();
 
     }
 
