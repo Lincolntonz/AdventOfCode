@@ -97,8 +97,8 @@ internal class Program
     private static void Main(string[] args)
     {
 
-        _2025Day7 solver = new _2025Day7();
-        solver.aoc2025Day7();
+        _2025Day8 solver = new _2025Day8();
+        Console.WriteLine(solver.aoc2025Day8());
 
     }
 
