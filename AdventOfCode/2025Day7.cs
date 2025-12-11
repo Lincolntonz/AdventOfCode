@@ -35,9 +35,11 @@ namespace AdventOfCode
 
             //foreach (string str in input)
             //    Console.WriteLine(str);
+            Console.WriteLine(RunManifold(input).timelines.ToString());
+
+            //beamSplit = Part2(input, tachyonGrid, beamSplit, startingIndex);
 
 
-            beamSplit = Part2(input, tachyonGrid, beamSplit, startingIndex);
             return beamSplit.ToString();
         }
 
@@ -95,7 +97,8 @@ namespace AdventOfCode
             ///Answer is the number of different paths a beam could take to reach the bottom.
             /// count paths off of a split. Count '|' , but do not count an '|' that follows another '|'.
 
-            //my part one drawing is wrong.
+            //pretty much had it, need to re-write using long[width] arrays instead of list<ints>.
+            //then instead of carrying just a beam flag that beam is incoming, carry the count that path has been taken (if it's new -- previous>0)
 
             List<int> beamsOnPreviousRow = new List<int>(); //index value of each beam on previousRow
             List<int> beamsOnthisRow = new List<int>(); //index of each beam on previousRow
@@ -104,8 +107,22 @@ namespace AdventOfCode
 
             long countPipes = 0;
             long countPipes2 = 0;
+            //add starting point beam.
             beamsOnPreviousRow.Add(startingIndex[1]);
-            int[] pathCounter = new int[input[0].Length];  
+            //int[] pathCounter = new int[input[0].Length];
+            Dictionary<int, int> pathCounter = new Dictionary<int, int>();
+            for (int i = 0; i < input[0].Length; i++)
+            {
+                if (i == startingIndex[1])
+                {
+                    pathCounter.Add(i, 1);
+
+                }
+                else 
+                    pathCounter.Add(i, 0);
+            }
+
+
             for (int i = 1; i < tachyonGrid.Length; i++)  //i=1, don't start on entry point row.
             {
 
@@ -125,21 +142,29 @@ namespace AdventOfCode
                             beamsOnNextRow.Add(incomingBeamColumn + 1 > tachyonGrid[0].Length - 1 ? tachyonGrid[0].Length - 1 : incomingBeamColumn + 1);
                             tachyonGrid[i] = ReplaceAt(tachyonGrid[i], beamsOnNextRow.Last(), '|');
                             beamSplit++;
+                            pathCounter[incomingBeamColumn - 1] += beamsOnPreviousRow[i];
+                            pathCounter[incomingBeamColumn + 1] += beamsOnPreviousRow[i];
                             break;
                         case '.':
                             //empty space. beam will be here. 
                             //string immutable, removeat and ad to get around this
                             tachyonGrid[i] = ReplaceAt(tachyonGrid[i], incomingBeamColumn, '|');
                             beamsOnNextRow.Add(incomingBeamColumn);
-                            
+                            pathCounter[incomingBeamColumn + 1] += beamsOnPreviousRow[i];
+
                             break;
                     }
                 }
+                foreach (KeyValuePair<int, int> column in pathCounter)
+                {
+                    //countPipes2 += column.Value;
+                    Console.Write(column.Value + " ");
+                }
 
                 //need to keep track of number of times a path was taken. this would mean we need an int[tachyongrid[0].length], where each index is a counter for how many times the path occurs.
-                foreach(int beamlocation in beamsOnNextRow)
+                foreach (int beamlocation in beamsOnNextRow)
                 {
-                    pathCounter[beamlocation]++;
+                    //pathCounter[beamlocation]++; 
                 }
 
 
@@ -150,6 +175,13 @@ namespace AdventOfCode
                 Console.WriteLine(tachyonGrid[i]);
 
             }
+            foreach (KeyValuePair<int,int> column in pathCounter)
+            {
+                countPipes2 += column.Value;
+                Console.Write("Column: " + column.Key + " - " + column.Value + "\n");
+            }
+
+
             //var countpipes2 = 0;
             ////count pipes.
             //foreach (string str in tachyonGrid)
@@ -160,10 +192,10 @@ namespace AdventOfCode
             //            countpipes2++;
             //    }
             //}
-            foreach (int p in pathCounter)
-            {
-                countPipes2 += p;
-            }
+            //foreach (int p in pathCounter)
+            //{
+            //    countPipes2 += p;
+            //}
 
             Console.Write(String.Format(@"Count splits total: {0} Count pipes: {1} ", beamSplit, countPipes2));
             return beamSplit;
@@ -177,6 +209,60 @@ namespace AdventOfCode
             char[] chars = input.ToCharArray();// string to char array
             chars[index] = newChar; //replace index with newCHar
             return new string(chars); //put back to string and return.
+        }
+        /// <summary>
+        /// https://github.com/andrewscodedump/Advent/blob/master/Advent/2025/Done/Days07-12/Day07.cs
+        /// pulled from solution thread.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public (int splits, long timelines) RunManifold(string[] input)
+        {
+            // Dynamic programming over the grid:
+            //
+            // Each cell in row i depends only on the values from row i-1 directly above it.
+            // We propagate a vector of "timeline counts" downward row by row instead of
+            // keeping a full 2D DP table, which reduces memory to O(columns).
+            //
+            // At forks ('^'), a timeline splits into left/right branches, and we count a
+            // "split" whenever an active timeline actually forks (>0 incoming paths).
+
+            var lines = input;
+            var crow = lines.Length;
+            var ccol = lines[0].Length;
+            var splits = 0;
+            var timelines = new long[ccol];
+
+            for (int irow = 0; irow < crow; irow++)
+            {
+                var nextTimelines = new long[ccol];
+                for (var icol = 0; icol < ccol; icol++)
+                {
+                    if (lines[irow][icol] == 'S')
+                    {
+                        nextTimelines[icol] = 1;
+                    }
+                    else if (lines[irow][icol] == '^')
+                    {
+                        splits += timelines[icol] > 0 ? 1 : 0;
+                        nextTimelines[icol - 1] += timelines[icol];
+                        nextTimelines[icol + 1] += timelines[icol];
+                    }
+                    else
+                    {
+                        nextTimelines[icol] += timelines[icol];
+                    }
+                }
+                foreach (long i in timelines)
+                {
+                    //countPipes2 += column.Value;
+                    Console.Write(i == 0 ? ".":i.ToString());
+                }
+                Console.WriteLine();
+
+                timelines = nextTimelines;
+            }
+            return (splits, timelines.Sum());
         }
     }
 }
